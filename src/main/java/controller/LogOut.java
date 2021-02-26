@@ -8,6 +8,6 @@ public class LogOut implements Command{
     public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.setAttribute("user",null);
-        return "redirect:/";
+        return "redirect: ";
     }
 }

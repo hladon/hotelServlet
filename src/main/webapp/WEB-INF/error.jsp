@@ -15,7 +15,7 @@
             <div class="col-md-12 text-center">
                 <span class="display-1 d-block">500</span>
                 <div class="mb-4 lead">Some things went wrong!</div>
-                <a href="/" class="btn btn-link">Back to Home</a>
+                <a href="/app/" class="btn btn-link">Back to Home</a>
             </div>
         </div>
     </div>

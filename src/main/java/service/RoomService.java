@@ -2,16 +2,12 @@ package service;
 
 
 import DAO.RoomDAO;
-import entity.Category;
 import entity.Room;
 import entity.RoomAndStatus;
+import org.apache.log4j.Logger;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import java.util.logging.Logger;
 
 
 public class RoomService {
@@ -44,8 +40,8 @@ public class RoomService {
         return roomDAO.findAll();
     }
 
-    public List<RoomAndStatus> getRooms(Date startRentDate, Date endRentDate, Integer cap, Optional<String> sortType, Integer page) {
-        String sort = getSortType(sortType.get());
+    public List<RoomAndStatus> getRooms(Date startRentDate, Date endRentDate, Integer cap, String sortType, Integer page) {
+        String sort = getSortType(sortType);
         int offset = PAGE_SIZE * (page - 1);
         return roomDAO.findRoomsWithStatus(startRentDate, endRentDate, cap, sort, PAGE_SIZE, offset);
     }

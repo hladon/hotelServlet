@@ -1,12 +1,13 @@
 package controller;
 
+import org.apache.log4j.Logger;
 import service.RoomService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.logging.Logger;
+
 
 public class MainPage implements Command {
 
@@ -16,6 +17,7 @@ public class MainPage implements Command {
 
     @Override
     public String execute(HttpServletRequest request) {
+
         Optional<String> pageStr = Optional.ofNullable(request.getParameter("page"));
         Optional<String> sortType = Optional.ofNullable(request.getParameter("sort"));
         Optional<String> startRent = Optional.ofNullable(request.getParameter("startRent"));
@@ -39,8 +41,8 @@ public class MainPage implements Command {
         }
         request.setAttribute("startRent", startRent.orElse(LocalDate.now().toString()));
         request.setAttribute("endRent", endRent.orElse(LocalDate.now().plusDays(1).toString()));
-        request.setAttribute("rooms", roomService.getRooms(startRentDate, endRentDate, cap, sortType, page));
-        request.setAttribute("sortType", sortType);
+        request.setAttribute("rooms", roomService.getRooms(startRentDate, endRentDate, cap, sortType.orElse("price"), page));
+        request.setAttribute("sortType", sortType.orElse("price"));
         request.setAttribute("pageNumbers", 2);
 
         return "/hotelRooms.jsp";

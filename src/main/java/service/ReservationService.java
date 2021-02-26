@@ -4,10 +4,10 @@ import DAO.ReservationDAO;
 import entity.Reservation;
 import entity.ReservationStatus;
 import entity.User;
+import org.apache.log4j.Logger;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.logging.Logger;
 
 
 public class ReservationService {

@@ -16,7 +16,7 @@ public class LoginPost implements Command {
 
         HttpSession session = request.getSession();
         if (userService.validate(username, password, session)) {
-            return "redirect:/";
+            return "redirect: ";
         } else {
             request.setAttribute("message", "Wrong username or password");
             return "/login.jsp";

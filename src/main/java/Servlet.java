@@ -20,7 +20,7 @@ public class Servlet extends HttpServlet {
         commandsGet.put("admin/orders", new AdminOrders());
         commandsGet.put("admin/rooms", new AdminRooms());
         commandsGet.put("login", new Login());
-        commandsGet.put("logOut", new LogOut());
+        commandsGet.put("logout", new LogOut());
         commandsGet.put("reservation", new Reservation());
         commandsGet.put("user/orders", new UserOrders());
 
