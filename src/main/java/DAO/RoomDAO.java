@@ -18,6 +18,7 @@ public class RoomDAO {
 
     private static final String SAVE_ROOM = "INSERT INTO room (room_name_en,room_name_ua,price,capacity,category) VALUES (?,?,?,?,?) ";
     private static final String GET_ROOM = "SELECT * FROM room ";
+    private static final String COUNT_ROOM = "SELECT count(room_id) FROM room WHERE capacity>=? ";
 
     private RoomDAO() {
     }
@@ -131,5 +132,28 @@ public class RoomDAO {
             }
         }
         return Optional.empty();
+    }
+
+    public int getPageNumber(int capacity){
+        ResultSet rs = null;
+        int pages=1;
+        try (Connection connection = ConnectorDAO.getConnection();
+             PreparedStatement ps = connection.prepareStatement(COUNT_ROOM) ){
+            ps.setInt(1, capacity);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                pages=rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+            } catch (SQLException throwables) {
+                LOGGER.info(throwables.getMessage());
+            }
+        }
+        return pages;
     }
 }

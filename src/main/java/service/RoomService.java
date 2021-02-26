@@ -61,10 +61,11 @@ public class RoomService {
         }
     }
 
-    private int getPageNumber(List list) {
-        int i = list.size() / PAGE_SIZE;
-        if (list.size() % PAGE_SIZE > 0)
-            i++;
-        return i;
+    public int getPageNumber(int capacity) {
+        int lines=roomDAO.getPageNumber( capacity);
+        int res=lines/PAGE_SIZE;
+        if (lines%PAGE_SIZE>0)
+            res++;
+        return res;
     }
 }

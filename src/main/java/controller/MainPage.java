@@ -43,7 +43,7 @@ public class MainPage implements Command {
         request.setAttribute("endRent", endRent.orElse(LocalDate.now().plusDays(1).toString()));
         request.setAttribute("rooms", roomService.getRooms(startRentDate, endRentDate, cap, sortType.orElse("price"), page));
         request.setAttribute("sortType", sortType.orElse("price"));
-        request.setAttribute("pageNumbers", 2);
+        request.setAttribute("pageNumbers", roomService.getPageNumber(cap));
 
         return "/hotelRooms.jsp";
     }

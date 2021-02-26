@@ -159,7 +159,7 @@
                                             <ul class="pagination justify-content-center">
                                                 <c:forEach begin="1" end="${pageNumbers}" var="i">
                                                     <li class="page-item">
-                                                        <a class="page-link" href="/?page=${i}">${i}</a>
+                                                        <a class="page-link" href="/app/?page=${i}">${i}</a>
                                                     </li>
                                                 </c:forEach>
                                             </ul>
