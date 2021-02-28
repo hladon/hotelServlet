@@ -37,14 +37,14 @@ public class ReservationService {
     public boolean deleteUserReservation(Integer reservationId,Integer userId){
         return reservationDAO.deleteByIdAndUser(reservationId,userId);
     }
-    public boolean createReservation(String start, String end, User user, String roomId) {
+    public boolean createReservation(LocalDate start, LocalDate end, User user, Integer roomId) {
         Reservation reservation = new Reservation();
         try {
-            reservation.setStartRent(LocalDate.parse(start));
-            reservation.setEndRent(LocalDate.parse(end));
+            reservation.setStartRent(start);
+            reservation.setEndRent(end);
             reservation.setStatus(ReservationStatus.RESERVED);
             reservation.setUserId(user.getUserId());
-            reservation.setRoomId(Integer.parseInt(roomId));
+            reservation.setRoomId(roomId);
         } catch (Exception e) {
             LOGGER.info(e.getMessage());
             return false;
@@ -55,14 +55,14 @@ public class ReservationService {
         return false;
     }
 
-    public boolean createOrder(String start, String end, User user, String capacity) {
+    public boolean createOrder(LocalDate start, LocalDate end, User user, Integer capacity) {
         Reservation reservation = new Reservation();
         try {
-            reservation.setStartRent(LocalDate.parse(start));
-            reservation.setEndRent(LocalDate.parse(end));
+            reservation.setStartRent(start);
+            reservation.setEndRent(end);
             reservation.setStatus(ReservationStatus.BOOKED);
             reservation.setUserId(user.getUserId());
-            reservation.setCapacity(Integer.parseInt(capacity));
+            reservation.setCapacity(capacity);
         } catch (Exception e) {
             LOGGER.info(e.getMessage());
             return false;
