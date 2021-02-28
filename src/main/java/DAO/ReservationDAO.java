@@ -23,6 +23,8 @@ public class ReservationDAO {
     private static final String GET_RESERVATION_BY_USER = "SELECT * FROM reservation  WHERE fk_user_id=?";
     private static final String GET_RESERVATION = "SELECT * FROM reservation ";
     private static final String DELETE_RESERVATION = "DELETE FROM reservation WHERE reservation_id=? ";
+    private static final String DELETE_USER_RESERVATION = "DELETE FROM reservation WHERE reservation_id=? AND fk_user_id=? ";
+    private static final String IS_RESERVED = "SELECT reservation_id FROM reservation WHERE fk_room_id=? AND start_rent<? AND end_rent>? ";
     private static final String UPDATE_RESERVATION_ROOM_STATUS = "UPDATE reservation SET fk_room_id=?,status=?" +
             "WHERE reservation_id=? ";
 
@@ -173,8 +175,45 @@ public class ReservationDAO {
         return true;
     }
 
-    public boolean deleteById(int id) {
+    public boolean updateRoomAndStatus(Integer roomId,ReservationStatus status,Integer reservationId,Date start,Date end) {
         ResultSet rs = null;
+        PreparedStatement ps=null;
+        PreparedStatement ps2=null;
+        try (Connection connection = ConnectorDAO.getConnection()) {
+            connection.setAutoCommit(false);
+            ps=connection.prepareStatement(IS_RESERVED);
+            ps.setInt(1,roomId);
+            ps.setDate(2,end);
+            ps.setDate(3,start);
+
+            ps2 = connection.prepareStatement(UPDATE_RESERVATION_ROOM_STATUS);
+            ps2.setInt(1, roomId);
+            ps2.setObject(2, status, java.sql.Types.OTHER);
+            ps2.setInt(3, reservationId);
+            rs=ps.executeQuery();
+            if (rs.next()) {
+                return false;
+            }
+            if (ps2.executeUpdate() == 0) {
+                throw new SQLException("Creating reservation failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            return false;
+        } finally {
+            try {
+                ps.close();
+                if (rs != null)
+                    rs.close();
+            } catch (SQLException throwables) {
+                LOGGER.info(throwables.getMessage());
+            }
+        }
+        return true;
+    }
+
+    public boolean deleteById(int id) {
+
         try (Connection connection = ConnectorDAO.getConnection();
              PreparedStatement ps = connection.prepareStatement(DELETE_RESERVATION)) {
 
@@ -186,13 +225,22 @@ public class ReservationDAO {
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             return false;
-        } finally {
-            try {
-                if (rs != null)
-                    rs.close();
-            } catch (SQLException throwables) {
-                LOGGER.info(throwables.getMessage());
+        }
+        return true;
+    }
+    public boolean deleteByIdAndUser(int id,int userId) {
+
+        try (Connection connection = ConnectorDAO.getConnection();
+             PreparedStatement ps = connection.prepareStatement(DELETE_USER_RESERVATION)) {
+            ps.setInt(1, id);
+            ps.setInt(2, userId);
+            if (ps.executeUpdate() == 0) {
+                throw new SQLException("Deleting failed, no rows affected.");
             }
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            return false;
         }
         return true;
     }

@@ -21,6 +21,7 @@
 <body style="margin-bottom: 60px;">
 <div class="container-fluid ">
     <jsp:include page="header.jsp"/>
+
     <div class="row justify-content-md-center">
         <div class="col-9">
             <c:forEach var="reservation" items="${reservations}">
@@ -39,15 +40,26 @@
 
                                     </div>
                                     <div class="col-2 py-5">
-                                        <a class="btn btn-dark"   href="/app/admin/remove?id=${reservation.reservationId}">Cancel
+                                        <a class="btn btn-dark"
+                                           href="/app/admin/remove?id=${reservation.reservationId}">Cancel
                                         </a>
-                                        <form action="admin/setRoom">
-                                            <input type="hidden" name="reservation" value="${reservation.reservationId}">
-                                            <button class="btn btn-dark" type="submit"><span>Add Room</span></button>
-                                            <select class="form-select" aria-label="Default select example" name="roomId" >
+                                        <form action="admin/setRoom" method="post">
+                                            <input type="hidden" name="reservation"
+                                                   value="${reservation.reservationId}">
+                                            <input type="hidden" name="start"
+                                                   value="${reservation.startRent}">
+                                            <input type="hidden" name="end"
+                                                   value="${reservation.endRent}">
+                                            <select class="form-select" aria-label="Default select example"
+                                                    name="roomId">
                                                 <c:forEach var="room" items="${rooms}">
-                                                <option value="${room.roomId}">${room.roomNameEn}</option>
+                                                    <c:choose>
+                                                    <c:when test="${reservation.capacity <=room.capacity}">
+                                                    <option value="${room.roomId}">${room.roomNameEn}</option>
+                                                    </c:when>
+                                                    </c:choose>
                                                 </c:forEach>
+                                                <input class="btn btn-dark" type="submit" value="Add Room"/>
                                             </select>
                                         </form>
 
@@ -58,12 +70,12 @@
                     </c:when>
                 </c:choose>
             </c:forEach>
-            <c:forEach var="reservation" items="${reservations}">
-                <c:choose>
-                    <c:when test="${reservation.roomId !=0}">
-                        <h4 class="h4 text-center">Reservation </h4>
-                        <div class="border border-dark rounded-3" style="margin-top: 15px">
-                            <div class="row justify-content-md-center">
+            <div class="row justify-content-md-center">
+                <h4 class="h4 text-center">Reservation </h4>
+                <c:forEach var="reservation" items="${reservations}">
+                    <c:choose>
+                        <c:when test="${reservation.roomId !=0}">
+                            <div class="border border-dark rounded-3" style="margin-top: 15px">
                                 <div class="col-9">
                                     <div class="col-6">
                                         <p>Order: <span>${reservation.reservationId}</span></p>
@@ -71,18 +83,18 @@
                                             <span>${reservation.endRent}</span></p>
                                         <p>Capacity: <span>${reservation.capacity}</span></p>
                                         <p>Room ID: <span>${reservation.roomId}</span></p>
-
                                     </div>
                                     <div class="col-2 py-5">
-                                        <a class="btn btn-dark"   href="/app/admin/remove?id=${reservation.reservationId}">Cancel
+                                        <a class="btn btn-dark"
+                                           href="/app/admin/remove?id=${reservation.reservationId}">Cancel
                                         </a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </c:when>
-                </c:choose>
-            </c:forEach>
+                        </c:when>
+                    </c:choose>
+                </c:forEach>
+            </div>
         </div>
     </div>
 

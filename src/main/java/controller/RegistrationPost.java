@@ -15,7 +15,7 @@ public class RegistrationPost implements Command {
         String password = request.getParameter("password");
 
         if (userService.createUser(username, password)) {
-            return "redirect:/";
+            return "redirect:";
         } else {
             request.setAttribute("message", "Such user already exists!");
             return "/login.jsp";

@@ -1,10 +1,12 @@
+CREATE TYPE reservation_status AS ENUM ('BOOKED', 'RESERVED', 'NOT_AVAILABLE');
+CREATE TYPE room_class AS ENUM ('STANDARD','DELUXE','SUITE');
 CREATE TABLE Room (
     room_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     room_name_en VARCHAR(15) UNIQUE,
     room_name_ua VARCHAR(15) UNIQUE,
     price INT ,
     capacity INT,
-    category VARCHAR(15)
+    category room_class
     );
 
     CREATE TABLE userDB (
@@ -14,8 +16,7 @@ CREATE TABLE Room (
     role VARCHAR (10),
     active BOOLEAN
     );
-    CREATE TYPE reservation_status AS ENUM ('BOOKED', 'RESERVED', 'NOT_AVAILABLE');
-    CREATE TYPE room_class AS ENUM ('STANDARD','DELUXE','SUITE');
+
 
     CREATE TABLE reservation(
     reservation_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY ,
@@ -28,7 +29,3 @@ CREATE TABLE Room (
     capacity INT,
     status reservation_status
     );
-
-SELECT room.*,res.status FROM room left join (select * from reservation where start_rent< '2021-02-13'
-							  and end_rent>'2021-02-12') as res
-							  ON room.id=res.room_id order by res.status desc limit 3 offset 3;

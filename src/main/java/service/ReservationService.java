@@ -6,6 +6,7 @@ import entity.ReservationStatus;
 import entity.User;
 import org.apache.log4j.Logger;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,7 +27,16 @@ public class ReservationService {
         return reservationService;
     }
 
+    public boolean setRoom(Integer reservation, Integer roomId, Date start,Date end){
+        return reservationDAO.updateRoomAndStatus(roomId,ReservationStatus.BOOKED,reservation,start,end);
+    }
 
+    public boolean deleteReservation(Integer reservationId){
+        return reservationDAO.deleteById(reservationId);
+    }
+    public boolean deleteUserReservation(Integer reservationId,Integer userId){
+        return reservationDAO.deleteByIdAndUser(reservationId,userId);
+    }
     public boolean createReservation(String start, String end, User user, String roomId) {
         Reservation reservation = new Reservation();
         try {
