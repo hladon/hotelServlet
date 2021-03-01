@@ -27,8 +27,8 @@ public class ReservationService {
         return reservationService;
     }
 
-    public boolean setRoom(Integer reservation, Integer roomId, Date start,Date end){
-        return reservationDAO.updateRoomAndStatus(roomId,ReservationStatus.BOOKED,reservation,start,end);
+    public boolean setRoom(Integer reservationId, Integer roomId, Date start,Date end){
+        return reservationDAO.updateRoomAndStatus(roomId,ReservationStatus.RESERVED,reservationId,start,end);
     }
 
     public boolean deleteReservation(Integer reservationId){

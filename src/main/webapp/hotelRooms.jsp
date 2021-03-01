@@ -30,7 +30,7 @@
             <div class="row">
 
                 <div class="col-3 ">
-                    <form action="/reservation" method="post">
+                    <form action="app/reservation" method="post">
                         <div class="mb-3">
                             <label for="start" class="form-label"><span><fmt:message key="CheckInDate"/></span></label>
                             <input type="date" class="form-control" id="start" name="startRent"

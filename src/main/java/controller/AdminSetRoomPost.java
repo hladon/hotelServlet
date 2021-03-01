@@ -19,7 +19,7 @@ public class AdminSetRoomPost implements Command{
             Date end=Date.valueOf(request.getParameter("end"));
             reservationService.setRoom(reservation,roomId,start,end);
         }catch (Exception e){
-            LOGGER.info(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
 
         return "redirect:admin/orders";

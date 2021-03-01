@@ -24,6 +24,6 @@ public class Reservation implements Command {
             LOGGER.info(e.getMessage());
         }
 
-        return "redirect:/user/orders";
+        return "redirect:user/orders";
     }
 }

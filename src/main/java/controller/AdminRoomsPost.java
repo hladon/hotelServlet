@@ -27,6 +27,6 @@ public class AdminRoomsPost implements Command {
             request.setAttribute("message","Wrong input!");
         }
         roomService.addRoom(room);
-        return "redirect:/admin/rooms";
+        return "redirect:admin/rooms";
     }
 }

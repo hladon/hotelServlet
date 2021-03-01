@@ -30,7 +30,6 @@ public class RoomService {
     }
 
     public boolean addRoom(Room room) {
-
         if (!roomDAO.save(room).isPresent())
             return false;
         return true;

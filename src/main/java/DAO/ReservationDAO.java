@@ -14,7 +14,7 @@ import java.util.Optional;
 public class ReservationDAO {
     private final static Logger LOGGER = Logger.getLogger(ReservationDAO.class);
 
-
+    private static ConnectorDAO connectorDAO = new ConnectorDAO();
     private static ReservationDAO reservationDAO;
 
     private static final String SAVE_RESERVATION = "INSERT INTO reservation " +
@@ -41,7 +41,7 @@ public class ReservationDAO {
     public List<Reservation> findAll() {
         List<Reservation> res = new ArrayList<>();
         ResultSet rs = null;
-        try (Connection connection = ConnectorDAO.getConnection();
+        try (Connection connection = connectorDAO.getConnection();
              PreparedStatement ps = connection.prepareStatement(GET_RESERVATION)) {
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -78,7 +78,7 @@ public class ReservationDAO {
     public List<Reservation> findAllByUser(User user) {
         List<Reservation> res = new ArrayList<>();
         ResultSet rs = null;
-        try (Connection connection = ConnectorDAO.getConnection();
+        try (Connection connection = connectorDAO.getConnection();
              PreparedStatement ps = connection.prepareStatement(GET_RESERVATION_BY_USER)) {
             ps.setInt(1, user.getUserId());
             rs = ps.executeQuery();
@@ -113,11 +113,23 @@ public class ReservationDAO {
 
     public Optional<Reservation> save(Reservation reservation) {
         ResultSet rs = null;
-        try (Connection connection = ConnectorDAO.getConnection();
+        try (Connection connection = connectorDAO.getConnection();
+             PreparedStatement psCheck = connection.prepareStatement(IS_RESERVED);
              PreparedStatement ps = connection.prepareStatement(SAVE_RESERVATION, Statement.RETURN_GENERATED_KEYS)) {
-
+            connection.setAutoCommit(false);
+            psCheck.setInt(1, reservation.getRoomId());
+            psCheck.setDate(2, Date.valueOf(reservation.getEndRent()));
+            psCheck.setDate(3, Date.valueOf(reservation.getStartRent()));
+            rs = psCheck.executeQuery();
+            if (rs.next()) {
+                throw new SQLException("Creating reservation failed, room is ordered.");
+            }
             ps.setInt(1, reservation.getUserId());
-            ps.setInt(2, reservation.getRoomId());
+            if (reservation.getRoomId() == 0) {
+                ps.setNull(2, java.sql.Types.INTEGER);
+            } else {
+                ps.setInt(2, reservation.getRoomId());
+            }
             ps.setDate(3, Date.valueOf(reservation.getStartRent()));
             ps.setDate(4, Date.valueOf(reservation.getEndRent()));
             ps.setInt(5, reservation.getCapacity());
@@ -134,6 +146,8 @@ public class ReservationDAO {
                     throw new SQLException("Creating reservation failed, no ID obtained.");
                 }
             }
+            connection.commit();
+            connection.setAutoCommit(false);
             return Optional.of(reservation);
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
@@ -150,7 +164,7 @@ public class ReservationDAO {
 
     public boolean updateRoomAndStatus(Reservation reservation) {
         ResultSet rs = null;
-        try (Connection connection = ConnectorDAO.getConnection();
+        try (Connection connection = connectorDAO.getConnection();
              PreparedStatement ps = connection.prepareStatement(UPDATE_RESERVATION_ROOM_STATUS)) {
 
             ps.setInt(1, reservation.getRoomId());
@@ -175,28 +189,31 @@ public class ReservationDAO {
         return true;
     }
 
-    public boolean updateRoomAndStatus(Integer roomId,ReservationStatus status,Integer reservationId,Date start,Date end) {
+    public boolean updateRoomAndStatus(Integer roomId, ReservationStatus status, Integer reservationId, Date start, Date end) {
         ResultSet rs = null;
-        PreparedStatement ps=null;
-        PreparedStatement ps2=null;
-        try (Connection connection = ConnectorDAO.getConnection()) {
+        PreparedStatement ps = null;
+        PreparedStatement ps2 = null;
+
+        try (Connection connection = connectorDAO.getConnection()) {
             connection.setAutoCommit(false);
-            ps=connection.prepareStatement(IS_RESERVED);
-            ps.setInt(1,roomId);
-            ps.setDate(2,end);
-            ps.setDate(3,start);
+            ps = connection.prepareStatement(IS_RESERVED);
+            ps.setInt(1, roomId);
+            ps.setDate(2, end);
+            ps.setDate(3, start);
 
             ps2 = connection.prepareStatement(UPDATE_RESERVATION_ROOM_STATUS);
             ps2.setInt(1, roomId);
             ps2.setObject(2, status, java.sql.Types.OTHER);
             ps2.setInt(3, reservationId);
-            rs=ps.executeQuery();
+            rs = ps.executeQuery();
             if (rs.next()) {
-                return false;
+                throw new SQLException("Creating reservation failed, room is ordered.");
             }
             if (ps2.executeUpdate() == 0) {
                 throw new SQLException("Creating reservation failed, no rows affected.");
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             return false;
@@ -214,7 +231,7 @@ public class ReservationDAO {
 
     public boolean deleteById(int id) {
 
-        try (Connection connection = ConnectorDAO.getConnection();
+        try (Connection connection = connectorDAO.getConnection();
              PreparedStatement ps = connection.prepareStatement(DELETE_RESERVATION)) {
 
             ps.setInt(1, id);
@@ -228,9 +245,10 @@ public class ReservationDAO {
         }
         return true;
     }
-    public boolean deleteByIdAndUser(int id,int userId) {
 
-        try (Connection connection = ConnectorDAO.getConnection();
+    public boolean deleteByIdAndUser(int id, int userId) {
+
+        try (Connection connection = connectorDAO.getConnection();
              PreparedStatement ps = connection.prepareStatement(DELETE_USER_RESERVATION)) {
             ps.setInt(1, id);
             ps.setInt(2, userId);

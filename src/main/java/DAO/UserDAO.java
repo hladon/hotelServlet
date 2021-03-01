@@ -10,6 +10,7 @@ import java.util.Optional;
 public class UserDAO {
     private final static Logger LOGGER = Logger.getLogger(UserDAO.class);
 
+    private static ConnectorDAO connectorDAO=new ConnectorDAO();
     private static UserDAO userDAO;
     private static final String GET_USER = "SELECT * FROM userDB WHERE user_name = ? ";
     private static final String SAVE_USER = "INSERT INTO userDB (user_name,password,role,active) VALUES (?,?,?,?) ";
@@ -26,7 +27,7 @@ public class UserDAO {
 
     public Optional<User> findByUserName(String name) {
         ResultSet rs = null;
-        try (Connection connection = ConnectorDAO.getConnection();
+        try (Connection connection = connectorDAO.getConnection();
              PreparedStatement ps = connection.prepareStatement(GET_USER)) {
             ps.setString(1, name);
             rs = ps.executeQuery();
@@ -54,7 +55,7 @@ public class UserDAO {
 
     public Optional<User> save(User user) {
         ResultSet rs = null;
-        try (Connection connection = ConnectorDAO.getConnection();
+        try (Connection connection = connectorDAO.getConnection();
              PreparedStatement ps = connection.prepareStatement(SAVE_USER, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getUserName());
             ps.setString(2, user.getPassword());

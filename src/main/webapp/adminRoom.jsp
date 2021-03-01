@@ -27,7 +27,7 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-6 ">
-                <form id="post" action="/admin/rooms" method="post">
+                <form id="post" action="app/admin/rooms" method="post">
                     <div class="form-group">
                         <label for="roomNameEn">English room name</label>
                         <input class="form-control" name="roomNameEn" id="roomNameEn" required="required">
@@ -60,7 +60,7 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-sm-10" style="margin-top: 20px">
-                            <button type="submit" class="btn btn-primary">Add new room</button>
+                            <button type="submit" class="btn btn-dark">Add new room</button>
                         </div>
                     </div>
                 </form>
@@ -81,10 +81,6 @@
                                 <p>Room: <span>${room.category}</span></p>
                                 <p>Capacity:<span>${room.capacity}</span></p>
                                 <p>Cost: <span>${room.price}</span></p>
-
-                            </div>
-                            <div class="col-2 py-5">
-                                <button class="btn btn-dark" type="button" value="${room.roomId}">Button</button>
                             </div>
                         </div>
                     </div>

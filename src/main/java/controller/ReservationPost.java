@@ -22,6 +22,6 @@ public class ReservationPost implements Command {
         }catch (Exception e){
             LOGGER.info(e.getMessage());
         }
-        return "redirect:/user/orders";
+        return "redirect:user/orders";
     }
 }

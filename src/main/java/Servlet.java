@@ -26,11 +26,11 @@ public class Servlet extends HttpServlet {
         commandsGet.put("admin/remove", new AdminRemove());
         commandsGet.put("user/remove", new UserRemove());
 
-        commandsPost.put("admin/orders", new AdminRoomsPost());
         commandsPost.put("login", new LoginPost());
         commandsPost.put("registration", new RegistrationPost());
         commandsPost.put("reservation", new ReservationPost());
         commandsPost.put("admin/setRoom", new AdminSetRoomPost());
+        commandsPost.put("admin/rooms", new AdminRoomsPost());
     }
 
     public void doGet(HttpServletRequest request,

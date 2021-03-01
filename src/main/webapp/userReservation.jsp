@@ -24,10 +24,10 @@
 
     <div class="row justify-content-md-center">
         <div class="col-9">
+            <h4 class="h4 text-center">Orders </h4>
             <c:forEach var="reservation" items="${reservations}">
                 <c:choose>
                     <c:when test="${reservation.roomId ==0}">
-                        <h4 class="h4 text-center">Orders </h4>
                         <div class="border border-dark rounded-3" style="margin-top: 15px">
                             <div class="row justify-content-md-center">
                                 <div class="col-9">
@@ -49,10 +49,10 @@
                     </c:when>
                 </c:choose>
             </c:forEach>
+            <h4 class="h4 text-center">Reservation </h4>
             <c:forEach var="reservation" items="${reservations}">
                 <c:choose>
                     <c:when test="${reservation.roomId !=0}">
-                        <h4 class="h4 text-center">Reservation </h4>
                         <div class="border border-dark rounded-3" style="margin-top: 15px">
                             <div class="row justify-content-md-center">
                                 <div class="col-9">

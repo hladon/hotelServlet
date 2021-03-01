@@ -14,6 +14,7 @@ import java.util.Optional;
 public class RoomDAO {
     private final static Logger LOGGER = Logger.getLogger(RoomDAO.class);
 
+    private static ConnectorDAO connectorDAO=new ConnectorDAO();
     private static RoomDAO roomDAO;
 
     private static final String SAVE_ROOM = "INSERT INTO room (room_name_en,room_name_ua,price,capacity,category) VALUES (?,?,?,?,?) ";
@@ -33,7 +34,7 @@ public class RoomDAO {
     public List<Room> findAll() {
         List<Room> res = new ArrayList<>();
         ResultSet rs = null;
-        try (Connection connection = ConnectorDAO.getConnection();
+        try (Connection connection = connectorDAO.getConnection();
              PreparedStatement ps = connection.prepareStatement(GET_ROOM)) {
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -67,10 +68,10 @@ public class RoomDAO {
                 " ON room_id=fk_room_id  where  room.capacity>=? order by "
                 + order +
                 " desc limit ? offset ?";
-        try (Connection connection = ConnectorDAO.getConnection();
+        try (Connection connection = connectorDAO.getConnection();
              PreparedStatement ps = connection.prepareStatement(GET_ROOMS_RESERVATION)) {
-            ps.setDate(1, start);
-            ps.setDate(2, end);
+            ps.setDate(1, end);
+            ps.setDate(2, start);
             ps.setInt(3, capacity);
             ps.setInt(4, limit);
             ps.setInt(5, offset);
@@ -102,7 +103,7 @@ public class RoomDAO {
 
     public Optional<Room> save(Room room) {
         ResultSet rs = null;
-        try (Connection connection = ConnectorDAO.getConnection();
+        try (Connection connection = connectorDAO.getConnection();
              PreparedStatement ps = connection.prepareStatement(SAVE_ROOM, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, room.getRoomNameEn());
             ps.setString(2, room.getRoomNameUa());
@@ -137,7 +138,7 @@ public class RoomDAO {
     public int getPageNumber(int capacity){
         ResultSet rs = null;
         int pages=1;
-        try (Connection connection = ConnectorDAO.getConnection();
+        try (Connection connection = connectorDAO.getConnection();
              PreparedStatement ps = connection.prepareStatement(COUNT_ROOM) ){
             ps.setInt(1, capacity);
             rs = ps.executeQuery();
